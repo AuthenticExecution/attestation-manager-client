@@ -1,0 +1,20 @@
+[package]
+name = "attman-cli"
+version = "0.1.0"
+authors = ["Gianluca Scopelliti <gianluca.scopelliti@ericsson.com>"]
+edition = "2018"
+resolver = "2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "2.33.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.8.17"
+anyhow = "1.0.38"
+log = "0.4.8"
+simple_logger = "1.5.0"
+
+sgx-crypto = { git = "https://github.com/AuthenticExecution/rust-sgx-remote-attestation.git" }
+manager_net = { git = "https://github.com/AuthenticExecution/attestation-manager.git", features = ["manager_structs"] }
