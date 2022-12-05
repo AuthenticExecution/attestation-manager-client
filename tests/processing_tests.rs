@@ -21,6 +21,6 @@ pub fn test_init() {
     write_command(&mut ctx, Command::Init.to_u8(), &init_data).unwrap();
     println!("Data sent");
 
-    let _resp = read_response::<Context, InitResponse, ErrorResponse>(&mut ctx).unwrap().unwrap();
+    let _resp = read_response::<Context<TcpStream>, InitResponse, ErrorResponse>(&mut ctx).unwrap().unwrap();
     println!("Completed");
 }

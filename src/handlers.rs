@@ -1,6 +1,7 @@
 use anyhow::Result;
 use log::{debug};
 use serde::Deserialize;
+use std::net::TcpStream;
 
 use sgx_crypto::Context;
 use manager_net::*;
@@ -10,11 +11,11 @@ use crate::error::Error;
 use crate::structs::*;
 
 // a sort of "specialization" of rust_net::read_response
-pub fn read_response<T : for<'de> Deserialize<'de>>(session : &mut Context) -> Result<Result<T, ErrorResponse>, manager_net::Error> {
-    manager_net::read_response::<Context, T, ErrorResponse>(session)
+pub fn read_response<T : for<'de> Deserialize<'de>>(session : &mut Context<TcpStream>) -> Result<Result<T, ErrorResponse>, manager_net::Error> {
+    manager_net::read_response::<Context<TcpStream>, T, ErrorResponse>(session)
 }
 
-pub fn handler_init(session : &mut Context, request : Command, data : &str) -> Result<()> {
+pub fn handler_init(session : &mut Context<TcpStream>, request : Command, data : &str) -> Result<()> {
     let data : InitData = read_from_file(data)?;
     debug!("{:?}", data);
 
@@ -27,7 +28,7 @@ pub fn handler_init(session : &mut Context, request : Command, data : &str) -> R
     }
 }
 
-pub fn handler_init_sgx(session : &mut Context, request : Command, data : &str) -> Result<()> {
+pub fn handler_init_sgx(session : &mut Context<TcpStream>, request : Command, data : &str) -> Result<()> {
     let data : InitSGXDataFiles = read_from_file(data)?;
     debug!("{:?}", data);
 
@@ -42,7 +43,7 @@ pub fn handler_init_sgx(session : &mut Context, request : Command, data : &str) 
     }
 }
 
-pub fn handler_attest_sgx(session : &mut Context, request : Command, data : &str) -> Result<()> {
+pub fn handler_attest_sgx(session : &mut Context<TcpStream>, request : Command, data : &str) -> Result<()> {
     let data : AttestSGXFiles = read_from_file(data)?;
     debug!("{:?}", data);
 
@@ -64,7 +65,7 @@ pub fn handler_attest_sgx(session : &mut Context, request : Command, data : &str
     Ok(())
 }
 
-pub fn handler_attest_native(session : &mut Context, request : Command, data : &str) -> Result<()> {
+pub fn handler_attest_native(session : &mut Context<TcpStream>, request : Command, data : &str) -> Result<()> {
     let data : AttestationRequestNative = read_from_file(data)?;
     debug!("{:?}", data);
 
@@ -84,7 +85,7 @@ pub fn handler_attest_native(session : &mut Context, request : Command, data : &
     Ok(())
 }
 
-pub fn handler_attest_sancus(session : &mut Context, request : Command, data : &str) -> Result<()> {
+pub fn handler_attest_sancus(session : &mut Context<TcpStream>, request : Command, data : &str) -> Result<()> {
     let data : AttestationRequestSancus = read_from_file(data)?;
     debug!("{:?}", data);
 
@@ -104,7 +105,7 @@ pub fn handler_attest_sancus(session : &mut Context, request : Command, data : &
     Ok(())
 }
 
-pub fn handler_attest_trustzone(session : &mut Context, request : Command, data : &str) -> Result<()> {
+pub fn handler_attest_trustzone(session : &mut Context<TcpStream>, request : Command, data : &str) -> Result<()> {
     let data : AttestationRequestTrustZone = read_from_file(data)?;
     debug!("{:?}", data);
 
@@ -125,7 +126,7 @@ pub fn handler_attest_trustzone(session : &mut Context, request : Command, data 
 }
 
 
-pub fn handler_get_key(session : &mut Context, request : Command, data : &str) -> Result<()> {
+pub fn handler_get_key(session : &mut Context<TcpStream>, request : Command, data : &str) -> Result<()> {
     let data : GetKeyRequest = read_from_file(data)?;
     debug!("{:?}", data);
 
@@ -145,7 +146,7 @@ pub fn handler_get_key(session : &mut Context, request : Command, data : &str) -
     Ok(())
 }
 
-pub fn handler_get_pub_key(session : &mut Context, request : Command, _data : &str) -> Result<()> {
+pub fn handler_get_pub_key(session : &mut Context<TcpStream>, request : Command, _data : &str) -> Result<()> {
     let data = GetPubKeyRequest::new();
     debug!("{:?}", data);
 
@@ -165,7 +166,7 @@ pub fn handler_get_pub_key(session : &mut Context, request : Command, _data : &s
     Ok(())
 }
 
-pub fn handler_reset(session : &mut Context, request : Command, _data : &str) -> Result<()> {
+pub fn handler_reset(session : &mut Context<TcpStream>, request : Command, _data : &str) -> Result<()> {
     let data = ResetRequest::new();
     debug!("{:?}", data);
 
